@@ -214,4 +214,5 @@ checkpoints/*
 tests/*
 
 models/*
+!models/.gitkeep
 
