@@ -2,14 +2,13 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2502.14856-b31b1b.svg)](https://arxiv.org/abs/2502.14856) [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-
 ## Introduction
 
 > This is the C/CUDA implementation for FR-Spec
 
 Surprisingly, EAGLE-2's bottleneck is LM-Head.
 
-Leveraging th/e 'long-tail' property of token distribution, we achieve a **1.12x speedup** over EAGLE-2.
+Leveraging the 'long-tail' property of token distribution, we achieve a **1.12x speedup** over EAGLE-2.
 
 Our method is simple to implement, preserves generation quality, and requires no retraining.
 
@@ -17,11 +16,16 @@ Our method is simple to implement, preserves generation quality, and requires no
 
 ## Decoding Speed
 
-
 <div align="center">
   <img src="assets/speed_compare.png" alt="FR-Spec Architecture" width="800px">
 </div>
 Decoding speed (token/s) of FR-Spec and EAGLE-2 for Llama3-8B and Llama3.2-1B under different frameworks.
+
+## News
+
+**2025.03.01** Implementation framework released.
+
+**2025.02.26** Token-frequency statistics released.
 
 ## Installation from source
 
@@ -38,12 +42,15 @@ pip install .
 ### Model Weights
 
 Download the corresponding model weights and save them in the `models` folder.
-- [LLaMA3-Instruct-8B-FR-Spec](https://huggingface.co/thunlp/LLaMA3-Instruct-8B-FR-Spec)
-- [LLaMA3.2-Instruct-1B-FR-Spec](https://huggingface.co/thunlp/LLaMA3.2-Instruct-1B-FR-Spec)
 
 ### Prepare Fr-Spec vocabulary subset
 
-You can also generate your own token frequency statistics based on the SlimPajama dataset:
+You can download our processed token-frequency statistics:
+
+- [LLaMA3-Instruct-8B-FR-Spec](https://huggingface.co/thunlp/LLaMA3-Instruct-8B-FR-Spec)
+- [LLaMA3.2-Instruct-1B-FR-Spec](https://huggingface.co/thunlp/LLaMA3.2-Instruct-1B-FR-Spec)
+
+Or you can also get your token-frequency statistics based on our script:
 
 ```bash
 cd fr
@@ -52,16 +59,16 @@ python fr.py --model_name <model_name> --model_path <model_path> --num_lines <nu
 - `model_name`: The name of the model (e.g.`llama3-8b-instruct`).
 - `model_path`: The path to the model (e.g. `meta-llama/Meta-Llama-3-8B-Instruct`).
 - `num_lines`: Number of lines to process from the SlimPajama dataset. Defaults to `1000000`.
-- `vocab_size`: A list of vocabulary sizes to process. Each size represents a subset of most frequent tokens to keep. Default values are `[8192, 16384, 32768, 65536]`.
+- `vocab_size`: A list of vocabulary sizes to process. Each size represents a subset of the most frequent tokens to keep. Default values are `[8192, 16384, 32768, 65536]`.
 
 An example command for generating token frequency statistics from 1 million lines of the SlimPajama dataset for the Llama-3-8B-Instruct model:
 ```bash
 python fr.py --model_name llama3-8b-instruct --model_path meta-llama/Meta-Llama-3-8B-Instruct --num_lines 1000000 --vocab_size <vocab_size>
 ```
 
-The script analyzes token frequency distribution across `num_lines` of the SlimPajama corpus and saves the most frequent tokens (as specified by `vocab_size`) to the corresponding directory in `fr-index`. Copy the generated vocabulary files to the corresponding FR-Spec model folder to enable their use in your experiments.
+The script analyzes token frequency distribution across `num_lines` of the SlimPajama corpus and saves the most frequent tokens (as specified by `vocab_size`) to the corresponding directory in `fr-index`. Copy the generated token-frequency files to the corresponding FR-Spec model folder to enable their use in your experiments.
 
-### Run Evalutaion
+### Run Evaluation
 
 All scripts for evaluation are located in the `scripts` folder. Here we use Llama-3-8B-Instruct as an example:
 
