@@ -7,8 +7,7 @@ import argparse
 import os
 
 def main(args):
-	# ds = load_dataset('cerebras/SlimPajama-627B', streaming=True, split='train')
-	ds = load_dataset("/home/test/testdata/open-source-data/cj/SlimPajama-627B", streaming=True, split='train')
+	ds = load_dataset('cerebras/SlimPajama-627B', streaming=True, split='train')
 	tokenizer = AutoTokenizer.from_pretrained(args.model_path)
 
 	token_counter = Counter()
