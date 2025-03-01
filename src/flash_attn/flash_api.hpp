@@ -2,6 +2,8 @@
  * Copyright (c) 2024, Tri Dao.
  ******************************************************************************/
 
+// We modified flash-attention based on https://github.com/Dao-AILab/flash-attention/blob/v2.4.2/csrc/flash_attn/flash_api.cpp
+
 #include <cutlass/numeric_types.h>
 
 #include "flash.h"

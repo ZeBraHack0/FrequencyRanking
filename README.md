@@ -87,10 +87,21 @@ bash scripts/<benchmark>/llama3-8b-instruct/check_correctness.sh
 
 Replace `<benchmark>` with one of: `spec_bench`, `human_eval`, or `gsm8k`.
 
-
 ## Contributors
 
-[Yudi Zhang](https://github.com/YudiZh), [Tengyu Pan](https://github.com/ThonyPan)
+- [Weilin Zhao](https://github.com/Achazwl)
+
+- [Yudi Zhang](https://github.com/YudiZh)
+
+- [Tengyu Pan](https://github.com/ThonyPan)
+
+## Acknowledgment
+
+Our experiments are based on https://github.com/SafeAILab/EAGLE and https://github.com/FasterDecoding/Medusa.
+
+The `evaluation/` folder is modified base on https://github.com/hemingkx/Spec-Bench.
+
+The `src/flash_attn/` folder is modified base on https://github.com/Dao-AILab/flash-attention/blob/v2.4.2/csrc/flash_attn.
 
 ## Citation
 
