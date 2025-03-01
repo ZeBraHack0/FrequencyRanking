@@ -296,7 +296,7 @@ struct EagleImpl : Model {
         lm_head = new Linear<T>(this->model->hidden_size, V);
 
         topk_func = new functions::TopK<T>(V, topk_per_iter);
-        topk_func_2 = new functions::TopK<T>(total_tried, this->tree_size-1); // TODO current topk do not support k > 32
+        topk_func_2 = new functions::TopK<T>(total_tried, this->tree_size-1);
     }
 
     void init_weight_ptr(Memory* memory) {
