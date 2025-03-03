@@ -23,6 +23,8 @@ Decoding speed (token/s) of FR-Spec and EAGLE-2 for Llama3-8B and Llama3.2-1B un
 
 ## News
 
+**2025.03.03** Feature merged to SGLang ([link](https://docs.sglang.ai/backend/speculative_decoding.html#EAGLE-Decoding-via-Frequency-Ranked-Speculative-Sampling)).
+
 **2025.03.01** Implementation framework released.
 
 **2025.02.26** Token-frequency statistics released.
