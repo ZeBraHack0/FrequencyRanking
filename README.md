@@ -70,6 +70,8 @@ python fr.py --model_name llama3-8b-instruct --model_path meta-llama/Meta-Llama-
 
 The script analyzes token frequency distribution across `num_lines` of the SlimPajama corpus and saves the most frequent tokens (as specified by `vocab_size`) to the corresponding directory in `fr-index`. Copy the generated token-frequency files to the corresponding FR-Spec model folder to enable their use in your experiments.
 
+**🌟Welcome:** We encourage you to upload your processed vocabulary for different models to HuggingFace (model name suffixed with ​FR-Spec).
+
 ### Run Evaluation
 
 All scripts for evaluation are located in the `scripts` folder. Here we use Llama-3-8B-Instruct as an example:
