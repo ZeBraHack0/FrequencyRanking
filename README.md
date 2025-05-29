@@ -23,6 +23,8 @@ Decoding speed (token/s) of FR-Spec and EAGLE-2 for Llama3-8B and Llama3.2-1B un
 
 ## News
 
+**2025.05.29** Welcome to follow our subsequent work: a systematic analysis of Speculative Sampling + Quantization: ([paper](https://arxiv.org/pdf/2505.22179)).
+
 **2025.05.15** Accepted. (ACL 2025 main)
 
 **2025.03.03** Feature merged to SGLang ([link](https://docs.sglang.ai/backend/speculative_decoding.html#EAGLE-Decoding-via-Frequency-Ranked-Speculative-Sampling)).
