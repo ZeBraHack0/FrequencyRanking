@@ -76,6 +76,15 @@ The script analyzes token frequency distribution across `num_lines` of the SlimP
 
 **🌟Welcome:** We encourage you to upload your processed vocabulary for different models to HuggingFace (model name suffixed with ​FR-Spec).
 
+### Get Started
+
+A simple example of using FR-Spec to generate text:
+
+```bash
+cd examples
+python example_generate.py
+```
+
 ### Run Evaluation
 
 All scripts for evaluation are located in the `scripts` folder. Here we use Llama-3-8B-Instruct as an example:
