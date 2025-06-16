@@ -292,7 +292,7 @@ struct EagleImpl : Model {
         this->total_tried = topk_per_iter * topk_per_iter * (num_iter - 1) + topk_per_iter;
         this->V = V;
 
-        kv_caches = new KVCacheManager<T>(num_layers, this->model->num_key_value_heads, this->model->head_dim);
+        kv_caches = new KVCacheManager<T>(num_layers, num_key_value_heads, head_dim);
         fc1 = new Linear<T, true, true>(this->model->hidden_size, this->model->hidden_size);
         fc2 = new Linear<T>(this->model->hidden_size, this->model->hidden_size);
         for (int i = 0; i < num_layers; i++) {
