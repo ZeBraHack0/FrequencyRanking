@@ -17,7 +17,7 @@ tokenizer = AutoTokenizer.from_pretrained(path)
 config = AutoConfig.from_pretrained(path)
 input_ids = tokenizer(prompt, return_tensors="pt").input_ids.cuda().int()
 num_tokens = input_ids.numel()
-num_generate = 100
+
 
 position_ids = torch.arange(num_tokens, dtype=torch.int32, device="cuda").view(1, num_tokens)
 
