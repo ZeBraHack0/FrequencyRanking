@@ -79,7 +79,7 @@ struct Attention {
         this->rms_norm_eps = rms_norm_eps;
 
         this->attn_norm = new RMSNorm<T>(hidden_size, rms_norm_eps);
-        this->qkv_proj = new Linear<T, true, has_attention_bias>(hidden_size, (num_attention_heads + num_key_value_heads) * head_dim);
+        this->qkv_proj = new Linear<T, true, has_attention_bias>(hidden_size, (num_attention_heads + 2 * num_key_value_heads) * head_dim);
         this->q_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_attention_heads * head_dim);
         this->k_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_key_value_heads * head_dim);
         this->v_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_key_value_heads * head_dim);
