@@ -54,7 +54,7 @@ void permute(const Stream& stream, int num_tokens, int a, int b, T* input, T* ou
 
 }
 
-template <typename T>
+template <typename T, bool has_attention_bias=false>
 struct Attention {
     int hidden_size;
     int num_attention_heads;
@@ -63,7 +63,8 @@ struct Attention {
     float rms_norm_eps;
 
     Norm<T> *attn_norm;
-    Linear<T> *q_proj, *k_proj, *v_proj;
+    Linear<T, true, has_attention_bias> *qkv_proj;
+    Linear<T, true, has_attention_bias> *q_proj, *k_proj, *v_proj; // belong to qkv_proj
     Linear<T> *o_proj;
     T* output;
 
@@ -78,32 +79,41 @@ struct Attention {
         this->rms_norm_eps = rms_norm_eps;
 
         this->attn_norm = new RMSNorm<T>(hidden_size, rms_norm_eps);
-        this->q_proj = new Linear<T>(hidden_size, num_attention_heads * head_dim);
-        this->k_proj = new Linear<T>(hidden_size, num_key_value_heads * head_dim);
-        this->v_proj = new Linear<T>(hidden_size, num_key_value_heads * head_dim);
+        this->qkv_proj = new Linear<T, true, has_attention_bias>(hidden_size, (num_attention_heads + num_key_value_heads) * head_dim);
+        this->q_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_attention_heads * head_dim);
+        this->k_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_key_value_heads * head_dim);
+        this->v_proj = new Linear<T, true, has_attention_bias>(hidden_size, num_key_value_heads * head_dim);
         this->o_proj = new Linear<T>(hidden_size, num_attention_heads * head_dim);
     }
 
     void init_weight_ptr(Memory* memory) {
         this->attn_norm->init_weight_ptr(memory);
-        this->q_proj->init_weight_ptr(memory);
-        this->k_proj->init_weight_ptr(memory);
-        this->v_proj->init_weight_ptr(memory);
+        this->qkv_proj->init_weight_ptr(memory);
+        this->q_proj->weight = this->qkv_proj->weight;
+        this->k_proj->weight = this->q_proj->weight + hidden_size * this->num_attention_heads * this->head_dim;
+        this->v_proj->weight = this->k_proj->weight + hidden_size * this->num_key_value_heads * this->head_dim;
+        if constexpr (has_attention_bias) {
+            this->q_proj->bias = this->qkv_proj->bias;
+            this->k_proj->bias = this->q_proj->bias + this->num_attention_heads * this->head_dim;
+            this->v_proj->bias = this->k_proj->bias + this->num_key_value_heads * this->head_dim;
+        }
+
         this->o_proj->init_weight_ptr(memory);
     }
 
     int64_t init_output_ptr(Memory* memory, int32_t num_tokens, int64_t offset) {
         int64_t attn_norm_end = this->attn_norm->init_output_ptr(memory, num_tokens, offset);
-        int64_t q_proj_end = this->q_proj->init_output_ptr(memory, num_tokens, attn_norm_end);
-        int64_t k_proj_end = this->k_proj->init_output_ptr(memory, num_tokens, q_proj_end);
-        int64_t v_proj_end = this->v_proj->init_output_ptr(memory, num_tokens, k_proj_end);
+        int64_t qkv_proj_end = this->qkv_proj->init_output_ptr(memory, num_tokens, attn_norm_end);
+        this->q_proj->output = this->qkv_proj->output;
+        this->k_proj->output = this->q_proj->output + num_tokens * this->num_attention_heads * this->head_dim;
+        this->v_proj->output = this->k_proj->output + num_tokens * this->num_key_value_heads * this->head_dim;
         
         memory->allocate((void**)&this->attn_output, offset);
-        int64_t softmax_lse_end = memory->allocate((void**)&this->softmax_lse, v_proj_end, num_tokens * this->num_attention_heads * sizeof(float));
+        int64_t softmax_lse_end = memory->allocate((void**)&this->softmax_lse, qkv_proj_end, num_tokens * this->num_attention_heads * sizeof(float));
         int64_t softmax_lse_accum_end = memory->allocate((void**)&this->softmax_lse_accum, softmax_lse_end, num_tokens * this->num_attention_heads * sizeof(float));
         int64_t oaccum_end = memory->allocate((void**)&this->oaccum, softmax_lse_accum_end, num_tokens * this->num_attention_heads * this->head_dim * sizeof(float));
 
-        int64_t o_proj_end = this->o_proj->init_output_ptr(memory, num_tokens, v_proj_end);
+        int64_t o_proj_end = this->o_proj->init_output_ptr(memory, num_tokens, qkv_proj_end);
         this->output = this->o_proj->output;
 
         return std::max(oaccum_end, o_proj_end);

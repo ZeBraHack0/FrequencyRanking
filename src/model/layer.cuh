@@ -6,14 +6,14 @@
 #include "mask.cuh"
 #include <cuda_runtime.h>
 
-template <typename T>
+template <typename T, bool has_attention_bias=false>
 struct Layer {
-    Attention<T> *attn;
+    Attention<T, has_attention_bias> *attn;
     FFN<T> *ffn;
     T* output;
 
     Layer(int hidden_size, int intermediate_size, int num_attention_heads, int num_key_value_heads, int head_dim, float rms_norm_eps) {
-        this->attn = new Attention<T>(hidden_size, num_attention_heads, num_key_value_heads, head_dim, rms_norm_eps);
+        this->attn = new Attention<T, has_attention_bias>(hidden_size, num_attention_heads, num_key_value_heads, head_dim, rms_norm_eps);
         this->ffn = new GatedFFN<T>(hidden_size, intermediate_size, rms_norm_eps);
     }
 

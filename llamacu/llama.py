@@ -40,6 +40,8 @@ class LLM(torch.nn.Module):
         self.chunk_length = chunk_length
         if not hasattr(self.config, "head_dim"):
             self.config.head_dim = self.config.hidden_size // self.config.num_attention_heads
+
+        has_attention_bias = (self.config.architectures[0] in ["Qwen2ForCausalLM"])
         C.init_base_model(
             self.memory_limit,
             self.memory_pool.data.data_ptr(),
@@ -53,6 +55,7 @@ class LLM(torch.nn.Module):
             self.config.rms_norm_eps,
             self.dtype_int,
             self.chunk_length,
+            has_attention_bias
         )
 
         self.logits = torch.empty((64, self.config.vocab_size), dtype=self.dtype, device="cuda")

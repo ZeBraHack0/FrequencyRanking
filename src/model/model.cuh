@@ -22,7 +22,7 @@ struct Model {
     /* verify should find max accept length (based on tree_parent and position_ids) and return, fix kvcache (based on position_ids), and make pred[:accept_length] the accept path (based on attn_mask and position_ids) */
 };
 
-template <typename T>
+template <typename T, bool has_attention_bias=false>
 struct ModelImpl : Model {
     Memory* memory;
 
@@ -40,7 +40,7 @@ struct ModelImpl : Model {
     KVCacheManager<T>* kv_caches;
 
     Embedding<T>* embedding;
-    std::vector<Layer<T>*> layers;
+    std::vector<Layer<T, has_attention_bias>*> layers;
     RMSNorm<T>* norm;
     Linear<T>* lm_head;
 
@@ -74,7 +74,7 @@ struct ModelImpl : Model {
 
         embedding = new Embedding<T>(vocab_size, hidden_size);
         for (int i = 0; i < num_hidden_layers; i++) {
-            layers.push_back(new Layer<T>(hidden_size, intermediate_size, num_attention_heads, num_key_value_heads, head_dim, rms_norm_eps));
+            layers.push_back(new Layer<T, has_attention_bias>(hidden_size, intermediate_size, num_attention_heads, num_key_value_heads, head_dim, rms_norm_eps));
         }
         norm = new RMSNorm<T>(hidden_size, rms_norm_eps);
         lm_head = new Linear<T>(hidden_size, vocab_size);
