@@ -23,7 +23,7 @@ struct GatedFFN : FFN<T> {
 
     Norm<T> *ffn_norm;
     Linear<T> *gateup_proj;
-    Linear<T> *gate_proj, *up_proj;
+    Linear<T> *gate_proj, *up_proj; // belong to gateup_proj
     Linear<T> *down_proj;
 
     T* gated_up;
