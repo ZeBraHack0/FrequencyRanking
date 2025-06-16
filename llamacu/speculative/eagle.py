@@ -33,6 +33,11 @@ class LLM_with_eagle(LLM_with_tree_drafter):
 
         C.init_eagle_model(
             self.eagle_config.eagle_num_layers,
+            self.eagle_config.intermediate_size,
+            self.eagle_config.num_attention_heads,
+            self.eagle_config.num_key_value_heads,
+            self.eagle_config.hidden_size // self.eagle_config.num_attention_heads, # head_dim
+            self.eagle_config.rms_norm_eps,
             num_iter,
             topk_per_iter,
             self.tree_size,

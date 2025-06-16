@@ -96,6 +96,11 @@ void init_medusa_model(
 
 void init_eagle_model(
     int num_layers,
+    int intermediate_size,
+    int num_attention_heads,
+    int num_key_value_heads,
+    int head_dim,
+    float rms_norm_eps,
     int num_iter,
     int topk_per_iter,
     int tree_size,
@@ -108,6 +113,11 @@ void init_eagle_model(
             model = new EagleImpl<elem_type, has_attention_bias>(
                 (ModelImpl<elem_type, has_attention_bias>*)model,
                 num_layers,
+                intermediate_size,
+                num_attention_heads,
+                num_key_value_heads,
+                head_dim,
+                rms_norm_eps,
                 num_iter,
                 topk_per_iter,
                 tree_size,

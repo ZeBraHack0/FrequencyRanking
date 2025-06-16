@@ -274,6 +274,11 @@ struct EagleImpl : Model {
     EagleImpl(
         ModelImpl<T, has_attention_bias>* model,
         int num_layers,
+        int intermediate_size,
+        int num_attention_heads,
+        int num_key_value_heads,
+        int head_dim,
+        float rms_norm_eps,
         int num_iter,
         int topk_per_iter,
         int tree_size,
@@ -291,7 +296,7 @@ struct EagleImpl : Model {
         fc1 = new Linear<T, true, true>(this->model->hidden_size, this->model->hidden_size);
         fc2 = new Linear<T>(this->model->hidden_size, this->model->hidden_size);
         for (int i = 0; i < num_layers; i++) {
-            layers.push_back(new Layer<T, has_attention_bias>(this->model->hidden_size, this->model->intermediate_size, this->model->num_attention_heads, this->model->num_key_value_heads, this->model->head_dim, this->model->rms_norm_eps));
+            layers.push_back(new Layer<T, has_attention_bias>(this->model->hidden_size, intermediate_size, num_attention_heads, num_key_value_heads, head_dim, rms_norm_eps));
         }
         lm_head = new Linear<T>(this->model->hidden_size, V);
 
