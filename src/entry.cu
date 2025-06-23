@@ -18,6 +18,17 @@
     }                                        \
   }()
 
+#define BOOL_SWITCH(COND, CONST_NAME, ...)               \
+  [&] {                                      \
+    if (COND) {                              \
+      constexpr static bool CONST_NAME = true; \
+      return __VA_ARGS__();                  \
+    } else {                                 \
+      constexpr static bool CONST_NAME = false; \
+      return __VA_ARGS__();                  \
+    }                                        \
+  }()
+
 Model* model;
 
 void init_base_model(
@@ -32,26 +43,28 @@ void init_base_model(
     int head_dim,
     float rms_norm_eps,
     int torch_dtype,
-    int chunk_length
+    int chunk_length,
+    int attention_bias
 ) {
     init_resources();
 
-    DTYPE_SWITCH(torch_dtype, [&] {
-        model = new ModelImpl<elem_type>(
-            memory_limit,
-            reinterpret_cast<void*>(memory_pool),
-            vocab_size,
-            num_hidden_layers,
-            hidden_size,
-            intermediate_size,
-            num_attention_heads,
-            num_key_value_heads,
-            head_dim,
-            rms_norm_eps,
-            chunk_length
-        );
+    BOOL_SWITCH(attention_bias, has_attention_bias, [&] {
+        DTYPE_SWITCH(torch_dtype, [&] {
+            model = new ModelImpl<elem_type, has_attention_bias>(
+                memory_limit,
+                reinterpret_cast<void*>(memory_pool),
+                vocab_size,
+                num_hidden_layers,
+                hidden_size,
+                intermediate_size,
+                num_attention_heads,
+                num_key_value_heads,
+                head_dim,
+                rms_norm_eps,
+                chunk_length
+            );
+        });
     });
-
 }
 
 void init_medusa_model(
@@ -65,21 +78,29 @@ void init_medusa_model(
     int torch_dtype
 ) {
     DTYPE_SWITCH(torch_dtype, [&] {
-        model = new MedusaImpl<elem_type>(
-            (ModelImpl<elem_type>*)model,
-            num_heads,
-            num_layers,
-            topk_per_head,
-            tree_size,
-            V,
-            reinterpret_cast<int32_t*>(tree_indices),
-            reinterpret_cast<int32_t*>(draft_position_ids)
-        );
+        const bool attention_bias = dynamic_cast<ModelImpl<elem_type, true>*>(model) != nullptr;
+        BOOL_SWITCH(attention_bias, has_attention_bias, [&] {
+            model = new MedusaImpl<elem_type, has_attention_bias>(
+                (ModelImpl<elem_type, has_attention_bias>*)model,
+                num_heads,
+                num_layers,
+                topk_per_head,
+                tree_size,
+                V,
+                reinterpret_cast<int32_t*>(tree_indices),
+                reinterpret_cast<int32_t*>(draft_position_ids)
+            );
+        });
     });
 }
 
 void init_eagle_model(
     int num_layers,
+    int intermediate_size,
+    int num_attention_heads,
+    int num_key_value_heads,
+    int head_dim,
+    float rms_norm_eps,
     int num_iter,
     int topk_per_iter,
     int tree_size,
@@ -87,14 +108,22 @@ void init_eagle_model(
     int torch_dtype
 ) {
     DTYPE_SWITCH(torch_dtype, [&] {
-        model = new EagleImpl<elem_type>(
-            (ModelImpl<elem_type>*)model,
-            num_layers,
-            num_iter,
-            topk_per_iter,
-            tree_size,
-            V
-        );
+        const bool attention_bias = dynamic_cast<ModelImpl<elem_type, true>*>(model) != nullptr;
+        BOOL_SWITCH(attention_bias, has_attention_bias, [&] {
+            model = new EagleImpl<elem_type, has_attention_bias>(
+                (ModelImpl<elem_type, has_attention_bias>*)model,
+                num_layers,
+                intermediate_size,
+                num_attention_heads,
+                num_key_value_heads,
+                head_dim,
+                rms_norm_eps,
+                num_iter,
+                topk_per_iter,
+                tree_size,
+                V
+            );
+        });
     });
 }
 

@@ -17,14 +17,14 @@ tokenizer = AutoTokenizer.from_pretrained(path)
 config = AutoConfig.from_pretrained(path)
 input_ids = tokenizer(prompt, return_tensors="pt").input_ids.cuda().int()
 num_tokens = input_ids.numel()
-num_generate = 100
+
 
 position_ids = torch.arange(num_tokens, dtype=torch.int32, device="cuda").view(1, num_tokens)
 
 if model_type == "eagle":
-    llm = LLM_with_eagle(eagle_path, path, dtype=dtype, memory_limit=0.4)
+    llm = LLM_with_eagle(eagle_path, path, dtype=dtype, memory_limit=0.9)
 else:
-    llm = LLM(path, dtype=dtype, memory_limit=0.4)
+    llm = LLM(path, dtype=dtype, memory_limit=0.9)
 
 our_generate = lambda: llm.generate(input_ids, num_generate)
 

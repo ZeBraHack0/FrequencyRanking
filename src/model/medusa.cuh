@@ -31,7 +31,7 @@ struct ResidualBlock : Linear<T, /*transposed=*/true, /*bias=*/true> {
     }
 };
 
-template<typename T>
+template<typename T, bool has_attention_bias=false>
 struct MedusaImpl : Model {
     int num_heads;
     int num_layers;
@@ -41,7 +41,7 @@ struct MedusaImpl : Model {
     int32_t* tree_indices;
     int32_t* draft_position_ids;
 
-    ModelImpl<T>* model;
+    ModelImpl<T, has_attention_bias>* model;
     std::vector<ResidualBlock<T>*> blocks;
     std::vector<Linear<T>*> lm_heads;
 
@@ -55,7 +55,7 @@ struct MedusaImpl : Model {
     int32_t* token_id_remap;
 
     MedusaImpl(
-        ModelImpl<T>* model,
+        ModelImpl<T, has_attention_bias>* model,
         int num_heads,
         int num_layers,
         int topk_per_head,
