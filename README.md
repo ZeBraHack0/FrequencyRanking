@@ -23,6 +23,8 @@ Decoding speed (token/s) of FR-Spec and EAGLE-2 for Llama3-8B and Llama3.2-1B un
 
 ## News
 
+**2025.06.23** Add support for Qwen2.
+
 **2025.05.29** Our subsequent work: a systematic analysis of Speculative + Quantization: ([paper](https://arxiv.org/pdf/2505.22179)).
 
 **2025.05.15** Accepted. (ACL 2025 main)
@@ -55,6 +57,7 @@ You can download our processed token-frequency statistics:
 
 - [LLaMA3-Instruct-8B-FR-Spec](https://huggingface.co/thunlp/LLaMA3-Instruct-8B-FR-Spec)
 - [LLaMA3.2-Instruct-1B-FR-Spec](https://huggingface.co/thunlp/LLaMA3.2-Instruct-1B-FR-Spec)
+- [Qwen2-7B-Instruct-FR-Spec](https://huggingface.co/thunlp/Qwen2-7B-Instruct-FR-Spec)
 
 Or you can also get your token-frequency statistics based on our script:
 
