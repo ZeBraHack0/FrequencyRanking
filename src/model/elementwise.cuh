@@ -17,7 +17,9 @@ template <typename T2>
 __global__ void elementwise_add_kernel(int dim, const T2* a, const T2* b, T2* c) {
     int row = blockIdx.x * dim;
     int col = blockIdx.y * blockDim.x + threadIdx.x;
-    c[row + col] = a[row + col] + b[row + col];
+    if (col < dim) {
+        c[row + col] = a[row + col] + b[row + col];
+    }
 }
 
 template <typename T>

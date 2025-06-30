@@ -6,7 +6,7 @@
 namespace {
 template <typename T, typename T2>
 __global__ void rms_norm_kernel(int dim, const T2* input, const T2* weight, T2* output, float eps) {
-    __shared__ T2 s_input[2048];
+    __shared__ T2 s_input[4096];
     __shared__ float shared_sum;
     __shared__ float warp_sum[16];
     int row = blockIdx.x;
@@ -52,7 +52,7 @@ __global__ void rms_norm_kernel(int dim, const T2* input, const T2* weight, T2* 
 
 template <typename T, typename T2>
 __global__ void add_and_rms_norm_kernel(int dim, T2* input, const T2* prev_output, const T2* weight, T2* output, float eps) {
-    __shared__ T2 s_input[2048];
+    __shared__ T2 s_input[4096];
     __shared__ float shared_sum;
     __shared__ float warp_sum[16];
     int row = blockIdx.x;
