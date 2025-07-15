@@ -23,9 +23,13 @@ Decoding speed (token/s) of FR-Spec and EAGLE-2 for Llama3-8B and Llama3.2-1B un
 
 ## News
 
+**2025.07.15** Our subsequent work: Sparse FFN (BlockFFN) + FR-Spec ([paper](https://arxiv.org/pdf/2507.08771), [code](https://github.com/thunlp/BlockFFN))
+
 **2025.06.23** Add support for Qwen2.
 
-**2025.05.29** Our subsequent work: a systematic analysis of Speculative + Quantization: ([paper](https://arxiv.org/pdf/2505.22179)).
+**2025.06.08** Our subsequent work: Sparse ATTN (InfLLM v2) + FR-Spec ([paper](https://arxiv.org/pdf/2506.07900), [code](https://github.com/OpenBMB/CPM.cu))
+
+**2025.05.29** Our subsequent work: a systematic analysis of Speculative + Quantization: ([paper](https://arxiv.org/pdf/2505.22179), [code](https://github.com/AI9Stars/SpecMQuant)).
 
 **2025.05.15** Accepted. (ACL 2025 main)
 
